@@ -11,6 +11,8 @@ const mockTasks: Task[] = [
     time: "14:00",
     category: "Work",
     progress: 75,
+    deadline: new Date(2023, 7, 20),
+    daysToComplete: 5
   },
   {
     id: "2",
@@ -20,6 +22,8 @@ const mockTasks: Task[] = [
     time: "06:30",
     category: "Health",
     progress: 100,
+    deadline: new Date(2023, 6, 30),
+    daysToComplete: 14
   },
   {
     id: "3",
@@ -29,6 +33,8 @@ const mockTasks: Task[] = [
     time: "20:00",
     category: "Personal",
     progress: 30,
+    deadline: new Date(2023, 7, 10),
+    daysToComplete: 7
   },
   {
     id: "4",
@@ -38,6 +44,8 @@ const mockTasks: Task[] = [
     time: "10:15",
     category: "Health",
     progress: 0,
+    deadline: new Date(2023, 6, 18),
+    daysToComplete: 1
   },
   {
     id: "5",
@@ -47,6 +55,8 @@ const mockTasks: Task[] = [
     time: "09:00",
     category: "Work",
     progress: 0,
+    deadline: new Date(2023, 6, 19),
+    daysToComplete: 1
   },
   {
     id: "6",
@@ -56,6 +66,8 @@ const mockTasks: Task[] = [
     time: "17:30",
     category: "Home",
     progress: 50,
+    deadline: new Date(2023, 6, 21),
+    daysToComplete: 1
   },
 ];
 
@@ -64,6 +76,12 @@ export const TaskService = {
   // Get all tasks
   getTasks: (): Promise<Task[]> => {
     return Promise.resolve(mockTasks);
+  },
+
+  // Get incomplete tasks
+  getIncompleteTasks: (): Promise<Task[]> => {
+    const incompleteTasks = mockTasks.filter(task => task.progress < 100);
+    return Promise.resolve(incompleteTasks);
   },
 
   // Get task by ID

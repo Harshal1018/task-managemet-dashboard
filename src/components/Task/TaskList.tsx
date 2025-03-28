@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import TaskCard from "./TaskCard";
+import { format, isAfter } from "date-fns";
 
 export interface Task {
   id: string;
@@ -19,14 +20,17 @@ export interface Task {
   time?: string;
   category: string;
   progress: number;
+  deadline?: Date;
+  daysToComplete?: number;
 }
 
 interface TaskListProps {
   tasks: Task[];
   onTaskClick?: (taskId: string) => void;
+  showDeadlines?: boolean;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, showDeadlines = false }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -95,6 +99,17 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick }) => {
               key={task.id}
               {...task}
               onClick={() => onTaskClick && onTaskClick(task.id)}
+              extraContent={showDeadlines && task.deadline ? (
+                <div className="flex items-center mt-2 text-sm text-muted-foreground">
+                  <Clock className="h-3 w-3 mr-1" />
+                  <span>
+                    Deadline: {format(task.deadline, 'MMM d, yyyy')}
+                    {isAfter(new Date(), task.deadline) && (
+                      <span className="text-destructive ml-1">(Overdue)</span>
+                    )}
+                  </span>
+                </div>
+              ) : undefined}
             />
           ))}
         </div>

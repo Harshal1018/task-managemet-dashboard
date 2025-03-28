@@ -1,30 +1,40 @@
 
 import React, { useEffect, useState } from "react";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TaskSummary from "@/components/Dashboard/TaskSummary";
 import WeeklyProgress from "@/components/Dashboard/WeeklyProgress";
 import TaskList from "@/components/Task/TaskList";
 import TaskForm from "@/components/Task/TaskForm";
+import TaskProgressForm from "@/components/Task/TaskProgressForm";
+import { Task } from "@/components/Task/TaskList";
 import { TaskService } from "@/services/taskService";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [incompleteTasks, setIncompleteTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState({ completed: 0, inProgress: 0, upcoming: 0 });
   const [weeklyData, setWeeklyData] = useState([]);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [isProgressFormOpen, setIsProgressFormOpen] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch tasks and statistics
     const fetchData = async () => {
       try {
         const tasksData = await TaskService.getTasks();
+        const incompleteTasksData = await TaskService.getIncompleteTasks();
         const statsData = await TaskService.getTasksStats();
         const weeklyData = await TaskService.getWeeklyProgress();
         
         setTasks(tasksData);
+        setIncompleteTasks(incompleteTasksData);
         setStats(statsData);
         setWeeklyData(weeklyData);
       } catch (error) {
@@ -41,8 +51,11 @@ const Dashboard = () => {
   }, [toast]);
 
   const handleTaskClick = (taskId: string) => {
-    // Navigate to task details or open edit modal
-    console.log("Task clicked:", taskId);
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+      setIsProgressFormOpen(true);
+    }
   };
 
   const handleCreateTask = async (values: any) => {
@@ -51,9 +64,11 @@ const Dashboard = () => {
       
       // Refetch data to update the UI
       const tasksData = await TaskService.getTasks();
+      const incompleteTasksData = await TaskService.getIncompleteTasks();
       const statsData = await TaskService.getTasksStats();
       
       setTasks(tasksData);
+      setIncompleteTasks(incompleteTasksData);
       setStats(statsData);
       
       toast({
@@ -65,6 +80,33 @@ const Dashboard = () => {
       toast({
         title: "Error creating task",
         description: "Could not create your task. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateProgress = async (taskId: string, progress: number) => {
+    try {
+      await TaskService.updateProgress(taskId, progress);
+      
+      // Refetch data to update the UI
+      const tasksData = await TaskService.getTasks();
+      const incompleteTasksData = await TaskService.getIncompleteTasks();
+      const statsData = await TaskService.getTasksStats();
+      
+      setTasks(tasksData);
+      setIncompleteTasks(incompleteTasksData);
+      setStats(statsData);
+      
+      toast({
+        title: "Progress Updated",
+        description: "Your task progress has been updated successfully!",
+      });
+    } catch (error) {
+      console.error("Error updating progress:", error);
+      toast({
+        title: "Error updating progress",
+        description: "Could not update your task progress. Please try again.",
         variant: "destructive",
       });
     }
@@ -93,6 +135,31 @@ const Dashboard = () => {
         inProgressTasks={stats.inProgress}
         upcomingTasks={stats.upcoming}
       />
+
+      {incompleteTasks.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-semibold flex justify-between items-center">
+              <span>Tasks Requiring Attention</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs gap-1"
+                onClick={() => navigate('/tasks')}
+              >
+                View All <ArrowUpRight className="h-3 w-3" />
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TaskList 
+              tasks={incompleteTasks.slice(0, 3)} 
+              onTaskClick={handleTaskClick}
+              showDeadlines={true}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <WeeklyProgress data={weeklyData} />
@@ -129,6 +196,15 @@ const Dashboard = () => {
         onOpenChange={setIsTaskFormOpen}
         onSubmit={handleCreateTask}
       />
+
+      {selectedTask && (
+        <TaskProgressForm
+          open={isProgressFormOpen}
+          onOpenChange={setIsProgressFormOpen}
+          onSubmit={handleUpdateProgress}
+          task={selectedTask}
+        />
+      )}
     </div>
   );
 };

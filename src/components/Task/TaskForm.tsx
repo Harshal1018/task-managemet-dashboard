@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
+import { Slider } from "@/components/ui/slider";
 import {
   Form,
   FormControl,
@@ -23,6 +24,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import {
   Popover,
@@ -45,6 +47,9 @@ export interface TaskFormValues {
   date: Date;
   time?: string;
   category: string;
+  deadline?: Date;
+  daysToComplete?: number;
+  progress?: number;
 }
 
 const formSchema = z.object({
@@ -57,6 +62,9 @@ const formSchema = z.object({
   category: z.string({
     required_error: "Category is required",
   }),
+  deadline: z.date().optional(),
+  daysToComplete: z.number().min(0).optional(),
+  progress: z.number().min(0).max(100).optional(),
 });
 
 interface TaskFormProps {
@@ -64,6 +72,7 @@ interface TaskFormProps {
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: TaskFormValues) => void;
   initialValues?: Partial<TaskFormValues>;
+  isEdit?: boolean;
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({
@@ -71,6 +80,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
   onOpenChange,
   onSubmit,
   initialValues,
+  isEdit = false,
 }) => {
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(formSchema),
@@ -80,6 +90,9 @@ const TaskForm: React.FC<TaskFormProps> = ({
       date: initialValues?.date || new Date(),
       time: initialValues?.time || "",
       category: initialValues?.category || "",
+      deadline: initialValues?.deadline || undefined,
+      daysToComplete: initialValues?.daysToComplete || 1,
+      progress: initialValues?.progress || 0,
     },
   });
 
@@ -90,13 +103,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>
-            {initialValues?.title ? "Edit Task" : "Create New Task"}
+            {isEdit ? "Edit Task" : "Create New Task"}
           </DialogTitle>
           <DialogDescription>
-            Fill in the details to {initialValues?.title ? "update your" : "create a new"} task.
+            Fill in the details to {isEdit ? "update your" : "create a new"} task.
           </DialogDescription>
         </DialogHeader>
 
@@ -141,7 +154,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 name="date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Date</FormLabel>
+                    <FormLabel>Start Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -167,6 +180,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -192,6 +206,70 @@ const TaskForm: React.FC<TaskFormProps> = ({
                       </FormControl>
                       <Clock className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="deadline"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Deadline</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Set deadline</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) => date < new Date()} 
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="daysToComplete"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Days to Complete</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="1"
+                        placeholder="Number of days needed" 
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -224,12 +302,36 @@ const TaskForm: React.FC<TaskFormProps> = ({
               )}
             />
 
+            {isEdit && (
+              <FormField
+                control={form.control}
+                name="progress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Progress ({field.value}%)</FormLabel>
+                    <FormControl>
+                      <Slider
+                        defaultValue={[field.value || 0]}
+                        max={100}
+                        step={5}
+                        onValueChange={(values) => field.onChange(values[0])}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Slide to update your task progress
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit">
-                {initialValues?.title ? "Update" : "Create"} Task
+                {isEdit ? "Update" : "Create"} Task
               </Button>
             </DialogFooter>
           </form>
