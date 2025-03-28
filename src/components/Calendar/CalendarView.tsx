@@ -72,18 +72,20 @@ const CalendarView: React.FC<CalendarViewProps> = ({
             month={date}
             className="rounded-md border"
             components={{
-              DayContent: ({ day }) => {
-                const hasEvents = events.some((event) => isSameDay(event.date, day));
+              DayContent: (props) => {
+                // Get the current day from props
+                const currentDay = props.date;
+                const hasEvents = events.some((event) => isSameDay(event.date, currentDay));
                 return (
                   <div className="relative flex h-9 w-9 items-center justify-center">
                     <span
                       className={cn(
-                        isToday(day) && "bg-primary text-primary-foreground",
-                        hasEvents && !isToday(day) && "font-medium",
-                        isSameDay(day, selectedDate) && !isToday(day) && "bg-accent"
+                        isToday(currentDay) && "bg-primary text-primary-foreground",
+                        hasEvents && !isToday(currentDay) && "font-medium",
+                        isSameDay(currentDay, selectedDate) && !isToday(currentDay) && "bg-accent"
                       )}
                     >
-                      {format(day, "d")}
+                      {format(currentDay, "d")}
                     </span>
                     {hasEvents && (
                       <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
