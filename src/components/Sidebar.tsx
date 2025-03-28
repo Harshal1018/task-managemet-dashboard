@@ -1,0 +1,88 @@
+
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { 
+  Calendar, 
+  LayoutDashboard, 
+  ListTodo, 
+  Settings, 
+  PlusCircle,
+  User
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+const Sidebar = () => {
+  const location = useLocation();
+
+  const navItems = [
+    {
+      title: "Dashboard",
+      href: "/",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+    },
+    {
+      title: "Tasks",
+      href: "/tasks",
+      icon: <ListTodo className="h-5 w-5" />,
+    },
+    {
+      title: "Calendar",
+      href: "/calendar",
+      icon: <Calendar className="h-5 w-5" />,
+    },
+    {
+      title: "Settings",
+      href: "/settings",
+      icon: <Settings className="h-5 w-5" />,
+    },
+  ];
+
+  return (
+    <aside className="hidden md:flex flex-col h-screen bg-card border-r border-border w-64 p-4">
+      <div className="flex items-center gap-2 px-2 mb-8">
+        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+          PT
+        </div>
+        <h1 className="font-semibold text-lg">Purple Task</h1>
+      </div>
+
+      <div className="space-y-1">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            to={item.href}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 rounded-lg text-foreground/70 hover:text-foreground hover:bg-accent transition-colors",
+              location.pathname === item.href && "bg-accent text-foreground font-medium"
+            )}
+          >
+            {item.icon}
+            <span>{item.title}</span>
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-6 px-3">
+        <Button className="w-full flex gap-2 bg-primary hover:bg-primary/90">
+          <PlusCircle className="h-4 w-4" />
+          New Task
+        </Button>
+      </div>
+
+      <div className="mt-auto px-2">
+        <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors cursor-pointer">
+          <div className="w-10 h-10 rounded-full bg-purple-200 flex items-center justify-center text-purple-700">
+            <User className="h-5 w-5" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">John Doe</span>
+            <span className="text-xs text-muted-foreground">john@example.com</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;
