@@ -11,14 +11,16 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Sidebar = () => {
   const location = useLocation();
+  const { user } = useAuth();
 
   const navItems = [
     {
       title: "Dashboard",
-      href: "/",
+      href: "/dashboard",
       icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {
@@ -76,8 +78,8 @@ const Sidebar = () => {
             <User className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-medium">John Doe</span>
-            <span className="text-xs text-muted-foreground">john@example.com</span>
+            <span className="text-sm font-medium">{user?.name || "Guest User"}</span>
+            <span className="text-xs text-muted-foreground">{user?.email || "guest@example.com"}</span>
           </div>
         </div>
       </div>

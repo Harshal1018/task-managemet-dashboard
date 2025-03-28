@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { User, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -21,11 +22,17 @@ interface LoginFormValues {
 const LoginForm = ({ onSuccess }: LoginFormProps) => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const onSubmit = (data: LoginFormValues) => {
     console.log("Login data:", data);
     // In a real app, this would make an API call
     // For now, we'll just simulate success
+    login({ 
+      name: data.username, 
+      email: `${data.username.toLowerCase().replace(/\s+/g, '.')}@example.com` 
+    });
+    
     toast({
       title: "Login successful",
       description: "Welcome back to Purple Task Trove!",

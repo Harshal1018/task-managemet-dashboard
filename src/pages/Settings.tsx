@@ -18,8 +18,10 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
+  const { user } = useAuth();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
   const [timezone, setTimezone] = useState("UTC");
@@ -71,12 +73,12 @@ const Settings = () => {
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input id="name" defaultValue="John Doe" />
+                <Input id="name" defaultValue={user?.name || "Guest User"} />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue="john@example.com" />
+                <Input id="email" type="email" defaultValue={user?.email || "guest@example.com"} />
               </div>
               
               <div className="space-y-2">

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Mail, Lock, Facebook, Twitter, Github } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SignupFormProps {
   onSuccess: () => void;
@@ -20,11 +21,17 @@ interface SignupFormValues {
 const SignupForm = ({ onSuccess }: SignupFormProps) => {
   const { register, handleSubmit, formState: { errors } } = useForm<SignupFormValues>();
   const { toast } = useToast();
+  const { signup } = useAuth();
 
   const onSubmit = (data: SignupFormValues) => {
     console.log("Signup data:", data);
     // In a real app, this would make an API call
     // For now, we'll just simulate success
+    signup({ 
+      name: data.name, 
+      email: data.email 
+    });
+    
     toast({
       title: "Account created",
       description: "Welcome to Purple Task Trove!",
