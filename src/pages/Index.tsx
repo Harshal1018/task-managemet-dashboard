@@ -1,9 +1,9 @@
 
 import { Navigate } from "react-router-dom";
 
-// Redirect to the Dashboard
+// Redirect to the Auth page
 const Index = () => {
-  return <Navigate to="/" replace />;
+  return <Navigate to="/auth" replace />;
 };
 
 export default Index;
