@@ -16,7 +16,7 @@ const Auth = () => {
   const handleSuccess = () => {
     // In a real app, this would involve authentication
     // For now, we'll just navigate to the dashboard
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (

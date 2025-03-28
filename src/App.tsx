@@ -10,6 +10,7 @@ import CalendarPage from "./pages/CalendarPage";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -19,9 +20,10 @@ const App = () => (
     <Sonner />
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />
         <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/settings" element={<Settings />} />
