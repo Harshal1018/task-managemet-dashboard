@@ -44,9 +44,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('hasSignedUpBefore', 'true');
     
     // In a real app, we'd store the user in a database
-    // For now, we'll just set the user in state
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    // For now, we'll just set the user in state and redirect to login
+    // Don't automatically log in the user after signup - they need to login explicitly
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
   const logout = () => {

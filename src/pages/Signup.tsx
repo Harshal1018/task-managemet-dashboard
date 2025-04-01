@@ -56,7 +56,7 @@ const Signup = () => {
       return;
     }
 
-    // Simulate signup - in a real app, this would send to a backend
+    // Signup - store the user info but don't auto login
     signup({ name, email });
     
     toast({

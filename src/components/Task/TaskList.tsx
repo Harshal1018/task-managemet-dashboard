@@ -94,24 +94,28 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskClick, showDeadlines =
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredTasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              {...task}
-              onClick={() => onTaskClick && onTaskClick(task.id)}
-              extraContent={showDeadlines && task.deadline ? (
-                <div className="flex items-center mt-2 text-sm text-muted-foreground">
-                  <Clock className="h-3 w-3 mr-1" />
-                  <span>
-                    Deadline: {format(task.deadline, 'MMM d, yyyy')}
-                    {isAfter(new Date(), task.deadline) && (
-                      <span className="text-destructive ml-1">(Overdue)</span>
-                    )}
-                  </span>
-                </div>
-              ) : undefined}
-            />
-          ))}
+          {filteredTasks.map((task) => {
+            const taskExtraContent = showDeadlines && task.deadline ? (
+              <div className="flex items-center mt-2 text-sm text-muted-foreground">
+                <Clock className="h-3 w-3 mr-1" />
+                <span>
+                  Deadline: {format(task.deadline, 'MMM d, yyyy')}
+                  {isAfter(new Date(), task.deadline) && (
+                    <span className="text-destructive ml-1">(Overdue)</span>
+                  )}
+                </span>
+              </div>
+            ) : undefined;
+            
+            return (
+              <TaskCard
+                key={task.id}
+                {...task}
+                onClick={() => onTaskClick && onTaskClick(task.id)}
+                extraContent={taskExtraContent}
+              />
+            );
+          })}
         </div>
       )}
     </div>

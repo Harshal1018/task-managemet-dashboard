@@ -19,14 +19,17 @@ import {
 } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
   const [timezone, setTimezone] = useState("UTC");
   const [dateFormat, setDateFormat] = useState("MM/DD/YYYY");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +53,15 @@ const Settings = () => {
       title: "Preferences Updated",
       description: "Your app preferences have been saved.",
     });
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+    navigate("/login");
   };
 
   return (
@@ -91,6 +103,19 @@ const Settings = () => {
               
               <Button type="submit">Save Profile</Button>
             </form>
+            
+            {/* Add Logout Button */}
+            <div className="mt-8 pt-6 border-t">
+              <h3 className="text-lg font-medium mb-4">Account Actions</h3>
+              <Button 
+                variant="destructive" 
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </TabsContent>
         
