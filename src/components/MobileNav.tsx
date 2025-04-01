@@ -50,7 +50,7 @@ const MobileNav = () => {
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-md flex items-center justify-center overflow-hidden">
           <img 
-            src="https://cdn.dribbble.com/userupload/14829815/file/original-d05645c81738964b4691696ac5390967.jpg?format=webp&resize=400x300&vertical=center" 
+            src="https://cdn.dribbble.com/users/857299/screenshots/5279698/tm-01_4x.jpg" 
             alt="Logo" 
             className="w-full h-full object-cover"
           />
@@ -70,7 +70,7 @@ const MobileNav = () => {
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-md flex items-center justify-center overflow-hidden">
                   <img 
-                    src="https://cdn.dribbble.com/userupload/14829815/file/original-d05645c81738964b4691696ac5390967.jpg?format=webp&resize=400x300&vertical=center" 
+                    src="https://cdn.dribbble.com/users/857299/screenshots/5279698/tm-01_4x.jpg" 
                     alt="Logo" 
                     className="w-full h-full object-cover"
                   />
