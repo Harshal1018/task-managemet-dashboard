@@ -4,7 +4,8 @@ Purple Task Trove is a modern task management dashboard that helps users efficie
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/7431942b-d68e-4785-a819-3d492e47fe7b
+**URL**:task-mangement-dashboard.netlify.app
+
 
 
 🎨 Features
