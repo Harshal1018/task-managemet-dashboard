@@ -14,6 +14,7 @@ interface TaskCardProps {
   category: string;
   progress: number;
   onClick?: () => void;
+  extraContent?: React.ReactNode;
 }
 
 const getCategoryColor = (category: string) => {
@@ -38,6 +39,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   category,
   progress,
   onClick,
+  extraContent,
 }) => {
   return (
     <div 
@@ -73,6 +75,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
           </div>
         )}
       </div>
+      
+      {extraContent}
     </div>
   );
 };

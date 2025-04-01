@@ -56,10 +56,14 @@ const Sidebar = () => {
   return (
     <aside className="hidden md:flex flex-col h-screen bg-card border-r border-border w-64 p-4">
       <div className="flex items-center gap-2 px-2 mb-8">
-        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
-          PT
+        <div className="w-8 h-8 rounded-md flex items-center justify-center overflow-hidden">
+          <img 
+            src="https://cdn.dribbble.com/userupload/14829815/file/original-d05645c81738964b4691696ac5390967.jpg?format=webp&resize=400x300&vertical=center" 
+            alt="Logo" 
+            className="w-full h-full object-cover"
+          />
         </div>
-        <h1 className="font-semibold text-lg">Purple Task</h1>
+        <h1 className="font-semibold text-lg">Task Management</h1>
       </div>
 
       <div className="space-y-1">
